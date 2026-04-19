@@ -1,0 +1,49 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <linearGradient id="gradA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7CE6D8"/>
+      <stop offset="100%" stop-color="#5A7CFF"/>
+    </linearGradient>
+
+    <linearGradient id="gradB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D56AE0"/>
+      <stop offset="100%" stop-color="#5A55FF"/>
+    </linearGradient>
+
+    <linearGradient id="gradC" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF4040"/>
+      <stop offset="100%" stop-color="#FF6A6A"/>
+    </linearGradient>
+  </defs>
+
+  <line
+    x1="422"
+    y1="100"
+    x2="90"
+    y2="372"
+    stroke="url(#gradB)"
+    stroke-width="64"
+    stroke-linecap="round"
+  />
+
+  <line
+    x1="90"
+    y1="100"
+    x2="422"
+    y2="372"
+    stroke="url(#gradA)"
+    stroke-width="64"
+    stroke-linecap="round"
+  />
+
+  <polyline
+    points="200,380 256,440 312,380"
+    fill="none"
+    stroke="url(#gradC)"
+    stroke-width="48"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+</svg>
