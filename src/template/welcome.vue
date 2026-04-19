@@ -1,15 +1,41 @@
 <script setup lang="ts">
 import { version as xVersion } from '@antdv-next/x'
-import { version as antdvVersion } from 'antdv-next'
-import { ref, version as vueVersion } from 'vue'
+import { ref } from 'vue'
 
-const msg = ref('Hello World!')
+const inputValue = ref('')
+const latestMessage = ref('')
+
+const handleChange = (value: string) => {
+  inputValue.value = value
+}
+
+const handleSubmit = (message: string) => {
+  latestMessage.value = message
+  inputValue.value = ''
+}
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-  <a-input v-model:value="msg" />
+  <a-flex vertical gap="middle">
+    <a-typography-title :level="3" :style="{ marginBottom: 0 }">
+      antdv-next/x Playground
+    </a-typography-title>
+    <a-typography-text type="secondary">
+      当前版本：@antdv-next/x {{ xVersion }}
+    </a-typography-text>
 
-  <p>@antdv-next/x {{ xVersion }} + antdv-next {{ antdvVersion }}</p>
-  <p>Vue {{ vueVersion }}</p>
+    <ax-sender
+      :value="inputValue"
+      placeholder="试试输入内容并发送"
+      @change="handleChange"
+      @submit="handleSubmit"
+    />
+
+    <a-alert
+      v-if="latestMessage"
+      type="success"
+      show-icon
+      :message="`最近一次发送：${latestMessage}`"
+    />
+  </a-flex>
 </template>

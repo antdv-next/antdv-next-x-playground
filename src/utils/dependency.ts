@@ -57,7 +57,7 @@ export const genImportMap = ({
     },
     '@antdv-next/x': {
       version: antdvNextX,
-      path: '/dist/index.esm.js',
+      path: '/dist-browser/index.es.js',
     },
     '@antdv-next/x/': {
       version: antdvNextX,
