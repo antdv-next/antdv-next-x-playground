@@ -8,8 +8,8 @@ await loadStyle()
 export function setupAntdvNextX() {
   if (installed) return
   const instance = getCurrentInstance()
-  instance.appContext.app.use(Antd)
-  instance.appContext.app.use(X)
+  instance?.appContext.app.use(Antd)
+  instance?.appContext.app.use(X)
   installed = true
 }
 

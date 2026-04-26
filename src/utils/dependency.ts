@@ -63,6 +63,29 @@ export const genImportMap = ({
       version: antdvNextX,
       path: '/',
     },
+    '@antdv-next/x-markdown': {
+      version: '0.1.0-beta.1',
+      path: '/dist/index.js',
+    },
+    '@antdv-next/x-markdown/themes/': {
+      pkg: '@antdv-next/x-markdown',
+      version: '0.1.0-beta.1',
+      path: '/themes/',
+    },
+    '@antdv-next/x-markdown/': {
+      version: '0.1.0-beta.1',
+      path: '/',
+    },
+    marked: {
+      pkg: 'marked',
+      version: '12.0.2',
+      path: '/lib/marked.esm.js',
+    },
+    dompurify: {
+      pkg: 'dompurify',
+      version: '3.3.3',
+      path: '/dist/purify.es.mjs',
+    },
     'antdv-next': {
       version: 'latest',
       path: '/dist/antd.esm.js',

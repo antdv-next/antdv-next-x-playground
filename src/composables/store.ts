@@ -4,6 +4,7 @@ import {
   compileFile as originalCompileFile,
   useStore as useReplStore,
   type ImportMap,
+  type Store as ReplStore,
   type StoreState,
 } from '@vue/repl'
 import { objectOmit } from '@vueuse/core'
@@ -135,7 +136,7 @@ export const useStore = (initial: Initial) => {
         version,
         userOptions.styleSource,
       ).trim()
-      originalCompileFile(store, store.files[X_FILE]).then(
+      compileFile(store, store.files[X_FILE]).then(
         (errs) => (store.errors = errs),
       )
     },
@@ -155,15 +156,11 @@ export const useStore = (initial: Initial) => {
 
   function init() {
     watchEffect(() => {
-      originalCompileFile(store, store.activeFile).then(
-        (errs) => (store.errors = errs),
-      )
+      compileFile(store, store.activeFile).then((errs) => (store.errors = errs))
     })
     for (const [filename, file] of Object.entries(store.files)) {
       if (filename === store.activeFilename) continue
-      originalCompileFile(store, file).then((errs) =>
-        store.errors.push(...errs),
-      )
+      compileFile(store, file).then((errs) => store.errors.push(...errs))
     }
 
     watch(
@@ -265,6 +262,70 @@ export const useStore = (initial: Initial) => {
   Object.assign(store, utils)
 
   return store as typeof store & typeof utils
+}
+
+function replaceCssImports(code: string, importMap: ImportMap, forSSR = false) {
+  let result = ''
+  let lastIndex = 0
+  const cssImportRE = /import\s+(['"])([^'"]+\.css)\1;?/g
+
+  for (const match of code.matchAll(cssImportRE)) {
+    const [statement, , specifier] = match
+    const index = match.index ?? 0
+    result += code.slice(lastIndex, index)
+    lastIndex = index + statement.length
+
+    if (forSSR) continue
+
+    const href = resolveImport(specifier, importMap)
+    result += `await new Promise((resolve, reject) => {
+  const href = ${JSON.stringify(href)}
+  if ([...document.querySelectorAll('link[data-repl-css]')].some((link) => link.dataset.replCss === href)) return resolve(undefined)
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = href
+  link.dataset.replCss = href
+  link.addEventListener('load', resolve)
+  link.addEventListener('error', reject)
+  document.head.append(link)
+});`
+  }
+
+  return result + code.slice(lastIndex)
+}
+
+function resolveImport(specifier: string, importMap: ImportMap) {
+  const imports = importMap.imports ?? {}
+  const match = Object.keys(imports).reduce<string | undefined>(
+    (matched, key) => {
+      if (
+        key !== specifier &&
+        (!key.endsWith('/') || !specifier.startsWith(key))
+      ) {
+        return matched
+      }
+
+      return !matched || key.length > matched.length ? key : matched
+    },
+    undefined,
+  )
+
+  if (!match) return specifier
+
+  const value = imports[match]
+  if (!value) return specifier
+
+  return match.endsWith('/') ? value + specifier.slice(match.length) : value
+}
+
+async function compileFile(store: ReplStore, file: File) {
+  const errors = await originalCompileFile(store, file)
+  const importMap = store.getImportMap()
+
+  file.compiled.js = replaceCssImports(file.compiled.js, importMap)
+  file.compiled.ssr = replaceCssImports(file.compiled.ssr, importMap, true)
+
+  return errors
 }
 
 function generateXCode(_version: string, styleSource?: string) {
