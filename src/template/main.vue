@@ -27,6 +27,8 @@ onUnmounted(() => observer?.disconnect())
 
 <template>
   <a-config-provider :theme="themeConfig">
-    <App />
+    <ax-provider :theme="themeConfig">
+      <App />
+    </ax-provider>
   </a-config-provider>
 </template>

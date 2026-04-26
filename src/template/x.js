@@ -14,7 +14,13 @@ export function setupAntdvNextX() {
 }
 
 export function loadStyle() {
-  const styles = ['#RESETSTYLE#', '#STYLE#'].map((style) => {
+  const styles = [
+    '#RESETSTYLE#',
+    '#STYLE#',
+    'https://cdn.jsdelivr.net/npm/@antdv-next/x-markdown@latest/themes/index.css',
+    'https://cdn.jsdelivr.net/npm/@antdv-next/x-markdown@latest/themes/light.css',
+    'https://cdn.jsdelivr.net/npm/@antdv-next/x-markdown@latest/themes/dark.css',
+  ].map((style) => {
     return new Promise((resolve, reject) => {
       const link = document.createElement('link')
       link.rel = 'stylesheet'
